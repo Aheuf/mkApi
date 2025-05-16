@@ -12,7 +12,8 @@ router.get('/', async (req,res) => {
 
 router.get('/:nom', async (req,res) => {
   try {
-    res.json(await Player.findOne({nom:req.params.nom}).exec())
+    const nom = req.params.nom.toUpperCase();
+    res.json(await Player.findOne({nom:nom}).exec())
   } catch (e){
     res.json({message: e.message})
   }
@@ -20,7 +21,8 @@ router.get('/:nom', async (req,res) => {
 
 router.patch('/:nom', async (req,res) => {
   try {
-    res.json(await Player.findOneAndUpdate({nom:req.params.nom}, {pv:req.body.pv}, { new: true }))
+    const nom = req.params.nom.toUpperCase();
+    res.json(await Player.findOneAndUpdate({nom:nom}, {pv:req.body.pv}, { new: true }))
   } catch (e) {
     res.json({message: e.message})
   }
