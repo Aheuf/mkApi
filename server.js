@@ -1,6 +1,8 @@
 require('dotenv').config();
 const mongoose = require("mongoose");
 const express = require("express");
+const cors = require('cors');
+
 
 const app = express();
 
@@ -17,7 +19,7 @@ async function run() {
 }
 run().catch(console.dir);
 
-app.use(express.json())
+app.use(express.json(),cors())
 
 const playersRouter = require('./routes/players')
 app.use('/players', playersRouter)
