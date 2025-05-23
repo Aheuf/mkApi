@@ -1,6 +1,8 @@
 require('dotenv').config();
 const mongoose = require("mongoose");
 const express = require("express");
+const playersRouter = require('./routes/playersRoutes');
+
 const cors = require('cors');
 
 
@@ -21,7 +23,6 @@ run().catch(console.dir);
 
 app.use(express.json(),cors())
 
-const playersRouter = require('./routes/players')
 app.use('/players', playersRouter)
 
 app.listen(3000, () => console.info("=== SERVER STARTED ==="))
