@@ -1,5 +1,4 @@
 const express = require("express");
-const Player = require('../models/player');
 const { getAllPlayers, getPlayerByNom, updatePlayerHp } = require("../services/playersService");
 const router = express.Router();
 
