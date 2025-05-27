@@ -2,16 +2,20 @@ require('dotenv').config();
 const mongoose = require("mongoose");
 const express = require("express");
 const playersRouter = require('./routes/playersRoutes');
-
 const cors = require('cors');
-
+const http = require('http');
 
 const app = express();
+app.use(express.json());
+app.use(cors());
 
+app.use('/players', playersRouter)
+
+const server = http.createServer(app);
 const clientOptions = { serverApi: { version: '1', strict: true, deprecationErrors: true } };
+
 async function run() {
   try {
-    // Create a Mongoose client with a MongoClientOptions object to set the Stable API version
     await mongoose.connect(process.env.DATABASE_URL, clientOptions);
     await mongoose.connection.db.admin().command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
@@ -21,8 +25,7 @@ async function run() {
 }
 run().catch(console.dir);
 
-app.use(express.json(),cors())
 
-app.use('/players', playersRouter)
+require('./websocket')(server);
 
-app.listen(3000, () => console.info("=== SERVER STARTED ==="))
+server.listen(3000, () => console.info("=== SERVER STARTED ==="))
