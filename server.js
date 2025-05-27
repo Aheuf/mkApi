@@ -2,13 +2,13 @@ require('dotenv').config();
 const mongoose = require("mongoose");
 const express = require("express");
 const playersRouter = require('./routes/playersRoutes');
-
 const cors = require('cors');
-
+const http = require('http');
 
 const app = express();
-
+const server = http.createServer(app);
 const clientOptions = { serverApi: { version: '1', strict: true, deprecationErrors: true } };
+
 async function run() {
   try {
     // Create a Mongoose client with a MongoClientOptions object to set the Stable API version
@@ -24,5 +24,6 @@ run().catch(console.dir);
 app.use(express.json(),cors())
 
 app.use('/players', playersRouter)
+require('./websocket')(server);
 
-app.listen(3000, () => console.info("=== SERVER STARTED ==="))
+server.listen(3000, () => console.info("=== SERVER STARTED ==="))
