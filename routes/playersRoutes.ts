@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { PlayerService } from "../services/PlayerService/PlayerService.js";
+import { query, validationResult } from 'express-validator';
 
 const createPlayerRouter = (service: PlayerService) => {
   const router = Router();
@@ -12,17 +13,33 @@ const createPlayerRouter = (service: PlayerService) => {
     }
   });
 
-  router.get('/player', async (req,res) => {
+  router.get('/player', query("nom").notEmpty(), query("prenom").notEmpty(), async (req,res) => {
     try {
-      service.getPlayerByName(String(req.query.nom), String(req.query.prenom)).then(player => res.json(player));
+      const validationError = validationResult(req);
+
+      if(validationError.isEmpty()){
+        const player = await service.getPlayerByName(req.query!.nom, req.query!.prenom);
+
+        res.json(player);
+      } else {
+        res.json({error: validationError.array()});
+      }
     } catch (e){
       e instanceof Error ? res.status(500).json({ message: e.message }) : res.status(500).json({ message: 'Une erreur inconnue est survenue.' });
     }
   });
 
-  router.patch('/update', async (req,res) => {
+  router.patch('/update', query("nom").notEmpty(), query("prenom").notEmpty(), async (req,res) => {
     try {
-      res.json(await service.updatePlayerHp(String(req.query.nom), String(req.query.prenom), req.body.pv));
+        const validationError = validationResult(req);
+
+        if(validationError.isEmpty()){
+          const updatedPlayer = await service.updatePlayerHp(req.query!.nom, req.query!.prenom, req.body.pv)
+
+          res.json(updatedPlayer);
+        } else {
+          res.json({error: validationError.array()})
+        }
     } catch (e) {
       e instanceof Error ? res.status(500).json({ message: e.message }) : res.status(500).json({ message: 'Une erreur inconnue est survenue.' });
     }
