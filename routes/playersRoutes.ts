@@ -12,17 +12,17 @@ const createPlayerRouter = (service: PlayerService) => {
     }
   });
 
-  router.get('/:nom/:prenom', async (req,res) => {
+  router.get('/player', async (req,res) => {
     try {
-      service.getPlayerByName(req.params.nom, req.params.prenom).then(player => res.json(player));
+      service.getPlayerByName(String(req.query.nom), String(req.query.prenom)).then(player => res.json(player));
     } catch (e){
       res.json({message: e.message});
     }
   });
 
-  router.patch('/:nom/:prenom', async (req,res) => {
+  router.patch('/update', async (req,res) => {
     try {
-      res.json(await service.updatePlayerHp(req.params.nom, req.params.prenom, req.body.pv));
+      res.json(await service.updatePlayerHp(String(req.query.nom), String(req.query.prenom), req.body.pv));
     } catch (e) {
       res.json({message: e.message});
     }
