@@ -1,4 +1,3 @@
-import { removeAccent } from '../../middleware/utils';
 import Player, { PlayerType } from '../../models/Player';
 import { PlayerService } from './PlayerService';
 
@@ -13,12 +12,7 @@ export class PlayerServiceImpl implements PlayerService {
 
     async getPlayerByName(name:string, firstName:string):Promise<PlayerType> {
         try {
-            const foundedPlayer = await Player.findOne(
-                {
-                    nom:removeAccent(name),
-                    prenom:removeAccent(firstName)
-                }
-            ).exec()
+            const foundedPlayer = await Player.findOne({ nom:name, prenom:firstName }).exec()
 
             if (!foundedPlayer) throw new Error("player not found");
 
@@ -31,16 +25,9 @@ export class PlayerServiceImpl implements PlayerService {
     async updatePlayerHp(name:string, firstName:string, hp:number):Promise<PlayerType>{
         try {
             const updatedPlayer = await Player.findOneAndUpdate(
-                {
-                    nom:removeAccent(name),
-                    prenom:removeAccent(firstName)
-                },
-                {
-                    pv:hp
-                },
-                {
-                    new: true
-                }
+                { nom:name, prenom:firstName },
+                { pv:hp },
+                { new: true }
             );
 
             if (!updatedPlayer) throw new Error("player not found");
