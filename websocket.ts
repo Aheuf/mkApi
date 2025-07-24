@@ -1,7 +1,7 @@
 import { IncomingMessage, Server, ServerResponse } from 'http';
 import { WebSocketServer } from 'ws';
 
-module.exports = (server: Server<typeof IncomingMessage, typeof ServerResponse>) => {
+const websocket = (server: Server<typeof IncomingMessage, typeof ServerResponse>) => {
   const wss = new WebSocketServer({ server });
 
   wss.on('connection', (ws) => {
@@ -15,4 +15,6 @@ module.exports = (server: Server<typeof IncomingMessage, typeof ServerResponse>)
       console.log('Client déconnecté');
     });
   });
-}
+};
+
+export default websocket;

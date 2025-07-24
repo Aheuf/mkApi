@@ -1,6 +1,6 @@
-import Player from "../../../models/Player";
-import { PlayerServiceImpl } from "../PlayerServiceImpl";
-import { stubedPlayers } from "../../../models/__stubs__/player.stub"
+import { PlayerServiceImpl } from "../PlayerServiceImpl.js";
+import Player from "../../../models/player.js"
+import { stubedPlayers } from "../../../models/__stubs__/player.stub.js"
 
 describe("player service test", () => {
   const service = new PlayerServiceImpl();
@@ -23,14 +23,14 @@ describe("player service test", () => {
       expect(result).toStrictEqual(stubedPlayers);
     });
 
-    it("KO", () => {
+    it("KO", async () => {
       // arrange
       Player.find = jest.fn().mockRejectedValue(DbError);
 
       // act
 
       // assert
-      expect(service.getAllPlayers()).rejects.toThrow(DbError.message);
+      await expect(service.getAllPlayers()).rejects.toThrow(DbError.message);
       expect(Player.find).toHaveBeenCalled();
     });
   });
@@ -44,7 +44,7 @@ describe("player service test", () => {
 
     it("OK", async () => {
       // arrange
-      Player.findOne = jest.fn().mockResolvedValue(player);
+      Player.findOne = jest.fn().mockReturnValue({ exec: jest.fn().mockResolvedValue(player) });
 
       // act
       const result = await service.getPlayerByName(player.nom, player.prenom);
@@ -54,26 +54,25 @@ describe("player service test", () => {
       expect(Player.findOne).toHaveBeenCalled();
     });
 
-    it("KO", () => {
+    it("KO", async () => {
       // arrange
-      Player.findOne = jest.fn().mockRejectedValue(DbError);
+      Player.findOne = jest.fn().mockReturnValue({ exec: jest.fn().mockRejectedValue(DbError) });
 
       // act
 
       // assert
-      expect(service.getPlayerByName(player.nom, player.prenom)).rejects.toThrow(DbError.message);
+      await expect(service.getPlayerByName(player.nom, player.prenom)).rejects.toThrow(DbError.message);
       expect(Player.findOne).toHaveBeenCalled();
-
     });
 
-    it("KO not found", () => {
+    it("KO not found", async () => {
       // arrange
-      Player.findOne = jest.fn().mockResolvedValue(null);
+      Player.findOne = jest.fn().mockReturnValue({ exec: jest.fn().mockResolvedValue(null) });
 
       // act
 
       // assert
-      expect(service.getPlayerByName(player.nom, player.prenom)).rejects.toThrow("player not found");
+      await expect(service.getPlayerByName(player.nom, player.prenom)).rejects.toThrow("player not found");
       expect(Player.findOne).toHaveBeenCalled();
     });
   });
@@ -97,25 +96,25 @@ describe("player service test", () => {
       expect(Player.findOneAndUpdate).toHaveBeenCalled();
     });
 
-    it("KO", () => {
+    it("KO", async () => {
       // arrange
       Player.findOneAndUpdate = jest.fn().mockRejectedValue(DbError);
 
       // act
 
       // assert
-      expect(service.updatePlayerHp(player.nom, player.prenom, player.pv)).rejects.toThrow(DbError.message);
+      await expect(service.updatePlayerHp(player.nom, player.prenom, player.pv)).rejects.toThrow(DbError.message);
       expect(Player.findOneAndUpdate).toHaveBeenCalled();
     });
 
-    it("KO not found", () => {
+    it("KO not found", async () => {
       // arrange
       Player.findOneAndUpdate = jest.fn().mockResolvedValue(null);
 
       // act
 
       // assert
-      expect(service.updatePlayerHp(player.nom, player.prenom, player.pv)).rejects.toThrow("player not found")
+      await expect(service.updatePlayerHp(player.nom, player.prenom, player.pv)).rejects.toThrow("player not found")
       expect(Player.findOneAndUpdate).toHaveBeenCalled();
     });
   });

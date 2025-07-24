@@ -1,5 +1,5 @@
-import { ROLE } from "../../constants";
-import { PlayerType } from "../Player";
+import { ROLE } from "../../constants.js";
+import { PlayerType } from "../player.js";
 
 export const stubedPlayers: PlayerType[] = [
   {

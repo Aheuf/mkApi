@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { PlayerService } from "../services/PlayerService/PlayerService";
+import { PlayerService } from "../services/PlayerService/PlayerService.js";
 
 const createPlayerRouter = (service: PlayerService) => {
   const router = Router();
@@ -8,7 +8,7 @@ const createPlayerRouter = (service: PlayerService) => {
     try {
       service.getAllPlayers().then(players => res.json(players));
     } catch (e){
-      res.json({message: e.message});
+      e instanceof Error ? res.status(500).json({ message: e.message }) : res.status(500).json({ message: 'Une erreur inconnue est survenue.' });
     }
   });
 
@@ -16,7 +16,7 @@ const createPlayerRouter = (service: PlayerService) => {
     try {
       service.getPlayerByName(String(req.query.nom), String(req.query.prenom)).then(player => res.json(player));
     } catch (e){
-      res.json({message: e.message});
+      e instanceof Error ? res.status(500).json({ message: e.message }) : res.status(500).json({ message: 'Une erreur inconnue est survenue.' });
     }
   });
 
@@ -24,9 +24,17 @@ const createPlayerRouter = (service: PlayerService) => {
     try {
       res.json(await service.updatePlayerHp(String(req.query.nom), String(req.query.prenom), req.body.pv));
     } catch (e) {
-      res.json({message: e.message});
+      e instanceof Error ? res.status(500).json({ message: e.message }) : res.status(500).json({ message: 'Une erreur inconnue est survenue.' });
     }
   });
+
+  router.get('/count', async (req,res) => {
+    try {
+      service.getAllPlayers().then(players => res.json(players.length));
+    } catch (e){
+      e instanceof Error ? res.status(500).json({ message: e.message }) : res.status(500).json({ message: 'Une erreur inconnue est survenue.' });
+    }
+  })
 
   return router;
 }
