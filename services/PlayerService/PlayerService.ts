@@ -1,4 +1,4 @@
-import { PlayerType } from "../../models/Player";
+import { PlayerType } from "../../models/player.js";
 
 export interface PlayerService {
   getAllPlayers(): Promise<PlayerType[]>;

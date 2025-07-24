@@ -1,12 +1,13 @@
-import Player, { PlayerType } from '../../models/Player';
-import { PlayerService } from './PlayerService';
+import Player, { PlayerType } from '../../models/player.js';
+import { PlayerService } from './PlayerService.js';
 
 export class PlayerServiceImpl implements PlayerService {
     async getAllPlayers(): Promise<PlayerType[]> {
         try {
             return await Player.find();
         } catch (error) {
-            throw new Error(error)
+            if(error instanceof Error) throw error;
+            throw new Error('Une erreur inconnue est survenue.');
         }
     }
 
@@ -18,7 +19,8 @@ export class PlayerServiceImpl implements PlayerService {
 
             return foundedPlayer;
         } catch (error) {
-            throw new Error(error)
+            if(error instanceof Error) throw error;
+            throw new Error('Une erreur inconnue est survenue.');
         }
     }
 
@@ -34,7 +36,8 @@ export class PlayerServiceImpl implements PlayerService {
 
             return updatedPlayer;
         } catch (error) {
-            throw new Error(error);
+            if(error instanceof Error) throw error;
+            throw new Error('Une erreur inconnue est survenue.');
         }
     }
 }

@@ -1,8 +1,8 @@
 import express from "express";
-import playersRouter from '../playersRoutes';
+import playersRouter from '../playersRoutes.js';
 import request from 'supertest';
-import { stubedPlayers } from "../../models/__stubs__/player.stub";
-import { PlayerServiceMock } from "../../services/PlayerService/__mocks__/PlayerServiceMock";
+import { PlayerServiceMock } from '../../services/PlayerService/__mocks__/PlayerServiceMock.js';
+import { stubedPlayers } from '../../models/__stubs__/player.stub.js';
 
 const app = express();
 
@@ -45,5 +45,16 @@ describe("routing tests", () => {
       // assert
       expect(res.statusCode).toBe(200);
       expect(res.body.pv).toBe(2);
+  });
+
+      it('GET /players/count retourne le nombre de joueurs', async () => {
+      // arrange
+      const expectedResult = 4;
+      // act
+      const res = await request(app).get('/players/count');
+
+      // assert
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toEqual(expectedResult);
   });
 });

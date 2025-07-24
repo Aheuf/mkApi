@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import { ROLE } from "../constants";
+import { ROLE } from "../constants.js";
 
 export const playerSchema = new Schema({
   prenom:{

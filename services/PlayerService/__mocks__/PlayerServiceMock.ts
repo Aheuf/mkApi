@@ -1,5 +1,5 @@
 import { stubedPlayers } from "../../../models/__stubs__/player.stub";
-import { PlayerType } from "../../../models/Player";
+import { PlayerType } from "../../../models/player.js";
 import { PlayerService } from "../PlayerService";
 
 export class PlayerServiceMock implements PlayerService {
