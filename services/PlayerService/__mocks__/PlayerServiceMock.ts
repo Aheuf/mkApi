@@ -3,6 +3,7 @@ import { PlayerType } from "../../../models/player.js";
 import { PlayerService } from "../PlayerService";
 
 export class PlayerServiceMock implements PlayerService {
+
   getAllPlayers(): Promise<PlayerType[]> {
     return Promise.resolve(stubedPlayers);
   }
@@ -11,7 +12,11 @@ export class PlayerServiceMock implements PlayerService {
     return Promise.resolve(stubedPlayers[0]);
   }
 
-  updatePlayerHp(_name: string, _firstName: string, _hp: number): Promise<PlayerType> {
+  updatePlayerHp(_player: PlayerType): Promise<PlayerType> {
     return Promise.resolve(stubedPlayers[1]);
+  }
+
+  createPlayer(_player: PlayerType): Promise<PlayerType> {
+    return Promise.resolve(stubedPlayers[0]);
   }
 }

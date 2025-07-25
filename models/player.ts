@@ -1,11 +1,21 @@
 import mongoose, { Schema } from "mongoose";
+import { v4 as uuidv4 } from 'uuid';
 import { ROLE } from "../constants.js";
 
 export const playerSchema = new Schema({
+  id:{
+    type:String,
+    default: uuidv4,
+    immutable: true
+  },
   prenom:{
     type:String,
     required:true,
     upperCase:true
+  },
+  password:{
+    type:String,
+    required:true
   },
   nom:{
     type:String,
@@ -27,13 +37,20 @@ export const playerSchema = new Schema({
   }
 });
 
+playerSchema.pre('save', function(next) {
+  if (!this.id) {
+    this.id = uuidv4();
+  }
+  next();
+});
+
 export default mongoose.model("player", playerSchema);
 
 export type PlayerType = {
-  _id: string;
+  id?: string;
   prenom : string;
   nom : string;
   password: string;
-  pv : number;
-  role : ROLE;
+  pv?: number;
+  role?: ROLE;
 }
