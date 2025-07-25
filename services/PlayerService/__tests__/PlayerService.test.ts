@@ -89,7 +89,7 @@ describe("player service test", () => {
       Player.findOneAndUpdate = jest.fn().mockResolvedValue(player);
 
       // act
-      const result = await service.updatePlayerHp(player.nom, player.prenom, player.pv);
+      const result = await service.updatePlayerHp(player);
 
       // assert
       expect(result).toStrictEqual(stubedPlayers[0]);
@@ -103,7 +103,7 @@ describe("player service test", () => {
       // act
 
       // assert
-      await expect(service.updatePlayerHp(player.nom, player.prenom, player.pv)).rejects.toThrow(DbError.message);
+      await expect(service.updatePlayerHp(player)).rejects.toThrow(DbError.message);
       expect(Player.findOneAndUpdate).toHaveBeenCalled();
     });
 
@@ -114,8 +114,34 @@ describe("player service test", () => {
       // act
 
       // assert
-      await expect(service.updatePlayerHp(player.nom, player.prenom, player.pv)).rejects.toThrow("player not found")
+      await expect(service.updatePlayerHp(player)).rejects.toThrow("player not found")
       expect(Player.findOneAndUpdate).toHaveBeenCalled();
+    });
+  });
+
+  describe("create player", () => {
+    it("OK", async () => {
+      // arrange
+      Player.prototype.save = jest.fn().mockResolvedValue(stubedPlayers[0]);
+
+      // act
+      const result = await service.createPlayer(stubedPlayers[0]);
+
+      // assert
+      expect(result).toStrictEqual(stubedPlayers[0]);
+      expect(Player.prototype.save).toHaveBeenCalled();
+
+    });
+
+    it("KO", async () => {
+      // arrange
+      Player.prototype.save = jest.fn().mockRejectedValue(DbError);
+
+      // act
+
+      // assert
+      await expect(service.createPlayer(stubedPlayers[0])).rejects.toThrow(DbError.message);
+      expect(Player.prototype.save).toHaveBeenCalled();
     });
   });
 });
