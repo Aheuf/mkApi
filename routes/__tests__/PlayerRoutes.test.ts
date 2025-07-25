@@ -21,12 +21,18 @@ describe("routing tests", () => {
       expect(res.body).toEqual(stubedPlayers);
   });
 
-  it('GET /players avec query params retourne un joueur', async () => {
+  it('POST /players/login avec query body retourne un joueur', async () => {
       // arrange
       const playerToGet = stubedPlayers[0];
 
       // act
-      const res = await request(app).get(`/players/player?nom=${playerToGet.nom}&prenom=${playerToGet.prenom}`);
+      const res = await request(app)
+        .post(`/players/login`)
+        .send({
+          nom: playerToGet.nom,
+          prenom: playerToGet.prenom,
+          password: playerToGet.password
+        });
 
       // assert
       expect(res.statusCode).toBe(200);
@@ -39,8 +45,8 @@ describe("routing tests", () => {
 
       // act
       const res = await request(app)
-        .patch(`/players/update?nom=${playerToUpdate.nom}&prenom=${playerToUpdate.prenom}`)
-        .send({ pv: 2 });
+        .patch(`/players/update`)
+        .send(playerToUpdate);
 
       // assert
       expect(res.statusCode).toBe(200);
