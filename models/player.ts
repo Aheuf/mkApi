@@ -30,8 +30,10 @@ export const playerSchema = new Schema({
 export default mongoose.model("player", playerSchema);
 
 export type PlayerType = {
+  _id: string;
   prenom : string;
   nom : string;
+  password: string;
   pv : number;
   role : ROLE;
 }
