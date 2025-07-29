@@ -47,7 +47,7 @@ describe("player service test", () => {
       Player.findOne = jest.fn().mockReturnValue({ exec: jest.fn().mockResolvedValue(player) });
 
       // act
-      const result = await service.getPlayerByName(player.nom, player.prenom);
+      const result = await service.getPlayer(player.nom, player.prenom);
 
       // assert
       expect(result).toStrictEqual(stubedPlayers[0]);
@@ -61,7 +61,7 @@ describe("player service test", () => {
       // act
 
       // assert
-      await expect(service.getPlayerByName(player.nom, player.prenom)).rejects.toThrow(DbError.message);
+      await expect(service.getPlayer(player.nom, player.prenom)).rejects.toThrow(DbError.message);
       expect(Player.findOne).toHaveBeenCalled();
     });
 
@@ -72,7 +72,7 @@ describe("player service test", () => {
       // act
 
       // assert
-      await expect(service.getPlayerByName(player.nom, player.prenom)).rejects.toThrow("player not found");
+      await expect(service.getPlayer(player.nom, player.prenom)).rejects.toThrow("player not found");
       expect(Player.findOne).toHaveBeenCalled();
     });
   });

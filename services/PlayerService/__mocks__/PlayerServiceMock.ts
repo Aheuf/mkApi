@@ -8,7 +8,7 @@ export class PlayerServiceMock implements PlayerService {
     return Promise.resolve(stubedPlayers);
   }
 
-  getPlayerByName(_name: string, _firstName: string): Promise<PlayerType> {
+  getPlayer(_name: string, _firstName: string): Promise<PlayerType> {
     return Promise.resolve(stubedPlayers[0]);
   }
 

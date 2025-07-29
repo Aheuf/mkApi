@@ -22,6 +22,11 @@ export const playerSchema = new Schema({
     required:true,
     upperCase:true
   },
+  username:{
+    type:String,
+    unique:true,
+    required:true
+  },
   pv:{
     type:Number,
     required:true,
@@ -48,6 +53,7 @@ export default mongoose.model("player", playerSchema);
 
 export type PlayerType = {
   id?: string;
+  username: string;
   prenom : string;
   nom : string;
   password: string;

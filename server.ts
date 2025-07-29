@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import mongoose from "mongoose";
 import express from "express";
 import playersRouter from './routes/playersRoutes.js';
+import authRouter from './routes/authRoutes.js';
 import cors from 'cors';
 import http from 'http';
 import { ServerApiVersion } from "mongodb";
@@ -40,6 +41,8 @@ run().catch(console.dir);
 app.use(express.json(),cors());
 
 app.use('/players', playersRouter(playerService));
+app.use('/', authRouter(playerService));
+
 websocket(server);
 
 server.listen(3000, () => console.info("=== SERVER STARTED ==="));

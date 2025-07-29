@@ -12,9 +12,9 @@ export class PlayerServiceImpl implements PlayerService {
         }
     }
 
-    async getPlayerByName(name:string, firstName:string):Promise<PlayerType> {
+    async getPlayer(username:string, password:string):Promise<PlayerType> {
         try {
-            const foundedPlayer = await Player.findOne({ nom:name, prenom:firstName }).exec();
+            const foundedPlayer = await Player.findOne({ username:username, password:password }).exec();
 
             if (!foundedPlayer) throw new Error("player not found");
 

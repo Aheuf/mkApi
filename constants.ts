@@ -1,4 +1,5 @@
 export enum ROLE {
   ADMIN = "ADMIN",
-  PLAYER = "PLAYER"
+  PLAYER = "PLAYER",
+  QUEUED = "QUEUED"
 }
