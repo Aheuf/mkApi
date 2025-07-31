@@ -28,4 +28,6 @@ describe("auth routing tests", () => {
       expect(res.statusCode).toBe(200);
       expect(res.body.nom).toBe(playerToGet.nom);
   });
+
+  xit("GET /register avec query body retourne un joueur", async () => {}) //TODO: Implement this test when the register endpoint is ready
 });

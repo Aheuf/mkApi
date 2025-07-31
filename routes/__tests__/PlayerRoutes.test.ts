@@ -34,4 +34,6 @@ describe("player routing tests", () => {
       expect(res.statusCode).toBe(200);
       expect(res.body.pv).toBe(2);
   });
+
+  xit('DELETE /players supprime un joueur', async () => {});
 });
