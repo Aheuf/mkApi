@@ -1,6 +1,7 @@
 import { PlayerServiceImpl } from "../PlayerServiceImpl.js";
 import Player from "../../../models/player.js"
 import { stubedPlayers } from "../../../models/__stubs__/player.stub.js"
+import { hashPassword } from "../../../middleware/utils.js";
 
 describe("player service test", () => {
   const service = new PlayerServiceImpl();
@@ -47,7 +48,7 @@ describe("player service test", () => {
       Player.findOne = jest.fn().mockReturnValue({ exec: jest.fn().mockResolvedValue(player) });
 
       // act
-      const result = await service.getPlayer(player.nom, player.prenom);
+      const result = await service.getPlayer(player.nom, player.password);
 
       // assert
       expect(result).toStrictEqual(stubedPlayers[0]);
@@ -123,14 +124,14 @@ describe("player service test", () => {
     it("OK", async () => {
       // arrange
       Player.prototype.save = jest.fn().mockResolvedValue(stubedPlayers[0]);
+      const resultPlayer = { ...stubedPlayers[0], password: await hashPassword(stubedPlayers[0].password) };
 
       // act
       const result = await service.createPlayer(stubedPlayers[0]);
 
       // assert
-      expect(result).toStrictEqual(stubedPlayers[0]);
+      expect(result).toStrictEqual(resultPlayer);
       expect(Player.prototype.save).toHaveBeenCalled();
-
     });
 
     it("KO", async () => {

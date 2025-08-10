@@ -1,7 +1,10 @@
+import { ROLE } from '../../constants.js';
+import { hashPassword, isPasswordOk } from '../../middleware/utils.js';
 import Player, { PlayerType } from '../../models/player.js';
 import { PlayerService } from './PlayerService.js';
 
 export class PlayerServiceImpl implements PlayerService {
+    MAX_PLAYERS = 12;
 
     async getAllPlayers(): Promise<PlayerType[]> {
         try {
@@ -14,7 +17,9 @@ export class PlayerServiceImpl implements PlayerService {
 
     async getPlayer(username:string, password:string):Promise<PlayerType> {
         try {
-            const foundedPlayer = await Player.findOne({ username:username, password:password }).exec();
+            const userPassword = await hashPassword(password);
+
+            const foundedPlayer = await Player.findOne({ username:username, password:userPassword }).exec();
 
             if (!foundedPlayer) throw new Error("player not found");
 
@@ -44,7 +49,15 @@ export class PlayerServiceImpl implements PlayerService {
 
     async createPlayer(player: PlayerType): Promise<PlayerType> {
         try {
+            const playersLength = (await Player.find()).length;
             const newPlayer = new Player(player);
+
+            newPlayer.password = await hashPassword(player.password);
+
+            if(playersLength === this.MAX_PLAYERS) {
+                newPlayer.role = ROLE.QUEUED;
+            }
+
             return await newPlayer.save();
         } catch (error) {
             if(error instanceof Error) throw error;
