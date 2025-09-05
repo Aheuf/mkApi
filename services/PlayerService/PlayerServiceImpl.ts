@@ -1,5 +1,5 @@
 import { ROLE } from '../../constants.js';
-import { hashPassword, isPasswordOk } from '../../middleware/utils.js';
+import { hashPassword } from '../../middleware/utils.js';
 import Player, { PlayerType } from '../../models/player.js';
 import { PlayerService } from './PlayerService.js';
 
