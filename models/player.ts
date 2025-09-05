@@ -46,12 +46,15 @@ playerSchema.pre('save', function(next) {
 
 export default mongoose.model("player", playerSchema);
 
-export type PlayerType = {
-  _id?: mongoose.Types.ObjectId;
+export type NewPlayerPayload = {
   username: string;
-  prenom : string;
-  nom : string;
+  prenom: string;
+  nom: string;
   password: string;
-  pv?: number;
-  role?: ROLE;
+}
+
+export type PlayerType = NewPlayerPayload & {
+  _id?: mongoose.Types.ObjectId;
+  pv: number;
+  role: ROLE;
 }

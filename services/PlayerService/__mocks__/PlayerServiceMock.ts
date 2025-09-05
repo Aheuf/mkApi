@@ -8,12 +8,12 @@ export class PlayerServiceMock implements PlayerService {
     return Promise.resolve(stubedPlayers);
   }
 
-  getPlayer(_name: string, _firstName: string): Promise<PlayerType> {
+  getPlayer(_username:string, _password:string): Promise<PlayerType> {
     return Promise.resolve(stubedPlayers[0]);
   }
 
-  updatePlayerHp(_player: PlayerType): Promise<PlayerType> {
-    return Promise.resolve(stubedPlayers[1]);
+  updatePlayerHp(_username: string, _pv: number): Promise<void> {
+    return Promise.resolve();
   }
 
   createPlayer(_player: PlayerType): Promise<void> {

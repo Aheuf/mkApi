@@ -1,25 +1,27 @@
 import { Router } from "express";
 import { PlayerService } from "../services/PlayerService/PlayerService";
-import { log } from "console";
+import { generateAccessToken } from "../middleware/utils";
 
 const createAuthRouter = (service: PlayerService) => {
     const router = Router();
 
     router.post('/login', async (req,res) => {
-        try {
-            res.json(await service.getPlayer(req.body.username, req.body.password));
-        } catch (e){
-            e instanceof Error ? res.status(500).json({ message: e.message }) : res.status(500).json({ message: 'Une erreur inconnue est survenue.' });
-        }
+        const player = await service.getPlayer(req.body.username, req.body.password);
+        const token = generateAccessToken(player.username, player.role);
+
+        res.cookie("authorization", `Bearer ${token}`, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
+
+        res.json(player);
     });
 
     router.post("/register", async (req, res) => {
-        try {
-            await service.createPlayer(req.body);
-            res.status(200).send();
-        } catch (e){
-            e instanceof Error ? res.status(500).json({ message: e.message }) : res.status(500).json({ message: 'Une erreur inconnue est survenue.' });
-        }
+        await service.createPlayer(req.body);
+        res.status(200).send();
+    });
+
+    router.post('/logout', (req,res) => {
+        res.clearCookie("authorization");
+        res.status(200).send();
     });
 
     return router;

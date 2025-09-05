@@ -1,5 +1,5 @@
 import { ROLE } from "../../constants.js";
-import { PlayerType } from "../player.js";
+import { NewPlayerPayload, PlayerType } from "../player.js";
 
 export const stubedPlayers: PlayerType[] = [
   {
@@ -32,3 +32,10 @@ export const stubedPlayers: PlayerType[] = [
     role : ROLE.PLAYER
   }
 ];
+
+export const newStubedPlayer: NewPlayerPayload = {
+    username: "bob",
+    prenom : "robert",
+    nom : "squarepants",
+    password: "b!k1ni_b0tt0m"
+}

@@ -1,6 +1,7 @@
 import { PlayerServiceImpl } from "../PlayerServiceImpl.js";
 import Player from "../../../models/player.js"
 import { stubedPlayers } from "../../../models/__stubs__/player.stub.js"
+import { ROLE } from "../../../constants.js";
 const mockingoose = require('mockingoose');
 
 describe("player service test", () => {
@@ -18,7 +19,7 @@ describe("player service test", () => {
       mockingoose(Player).toReturn(stubedPlayers, "find")
 
       // act
-      const result = await service.getAllPlayers();
+      const result = await service.getAllPlayers(ROLE.ADMIN);
 
       // assert
       expect(result).toMatchObject(stubedPlayers);
@@ -29,7 +30,7 @@ describe("player service test", () => {
       mockingoose(Player).toReturn(DbError, 'find');
 
       // act & assert
-      await expect(service.getAllPlayers()).rejects.toThrow(DbError.message);
+      await expect(service.getAllPlayers(ROLE.ADMIN)).rejects.toThrow(DbError.message);
     });
   });
 
