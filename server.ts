@@ -12,7 +12,7 @@ import websocket from "./websocket.js";
 dotenv.config();
 
 const app = express();
-const server = http.createServer(express);
+const server = http.createServer(app);
 const clientOptions = {
   serverApi: {
     version: ServerApiVersion.v1,
@@ -24,11 +24,15 @@ const clientOptions = {
 async function run() {
   try {
     // Create a Mongoose client with a MongoClientOptions object to set the Stable API version
-    if(process.env.DATABASE_URL && mongoose.connection.db){
+    if(process.env.DATABASE_URL){
       await mongoose.connect(process.env.DATABASE_URL, clientOptions);
-      console.info("You successfully connected to MongoDB!");
+      if(mongoose.connection.db){
+        console.info("You successfully connected to MongoDB!");
+      } else {
+        throw new Error("Failed to connected to MongoDB!");
+      }
     } else {
-      throw new Error("Failed to connected to MongoDB!");
+      throw new Error("No URL provided for MongoDB connection");
     }
   } catch(e) {
      if(e instanceof Error) throw e;
@@ -38,10 +42,10 @@ async function run() {
 
 run().catch(console.dir);
 
-app.use(express.json(),cors());
-
+app.use(express.json());
+app.use(cors());
 app.use('/players', playersRouter(playerService));
-app.use('/', authRouter(playerService));
+app.use(authRouter(playerService));
 
 websocket(server);
 

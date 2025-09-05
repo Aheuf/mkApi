@@ -3,7 +3,6 @@ import { PlayerType } from "../player.js";
 
 export const stubedPlayers: PlayerType[] = [
   {
-    id: "1",
     username:"bobrat",
     prenom : "CLEMENT",
     nom : "GENTY",
@@ -11,7 +10,6 @@ export const stubedPlayers: PlayerType[] = [
     pv : 3,
     role : ROLE.ADMIN
   },{
-    id: "2",
     username:"bobcat",
     prenom : "LUCIANA",
     nom : "DOMINGOS",
@@ -19,7 +17,6 @@ export const stubedPlayers: PlayerType[] = [
     pv : 2,
     role : ROLE.PLAYER
   },{
-    id: "3",
     username:"bobhorse",
     prenom : "CLEMENT",
     nom : "LAILLE",
@@ -27,7 +24,6 @@ export const stubedPlayers: PlayerType[] = [
     pv : 3,
     role : ROLE.PLAYER
   },{
-    id: "4",
     username:"bobdog",
     prenom : "AURELIEN",
     password: "password",

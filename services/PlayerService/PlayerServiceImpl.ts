@@ -33,7 +33,7 @@ export class PlayerServiceImpl implements PlayerService {
     async updatePlayerHp(player:PlayerType):Promise<PlayerType>{
         try {
             const updatedPlayer = await Player.findOneAndUpdate(
-                { id: player.id },
+                { username: player.username },
                 { pv:player.pv },
                 { new: true }
             );
@@ -47,18 +47,16 @@ export class PlayerServiceImpl implements PlayerService {
         }
     }
 
-    async createPlayer(player: PlayerType): Promise<PlayerType> {
+    async createPlayer(player: PlayerType): Promise<void> {
         try {
-            const playersLength = (await Player.find()).length;
             const newPlayer = new Player(player);
+            const playersLength = (await Player.where("role").equals(ROLE.PLAYER)).length;
 
             newPlayer.password = await hashPassword(player.password);
+            newPlayer.role = playersLength === this.MAX_PLAYERS ? ROLE.QUEUED: ROLE.PLAYER;
+            newPlayer.pv = 3;
 
-            if(playersLength === this.MAX_PLAYERS) {
-                newPlayer.role = ROLE.QUEUED;
-            }
-
-            return await newPlayer.save();
+            await newPlayer.save();
         } catch (error) {
             if(error instanceof Error) throw error;
             throw new Error('Une erreur inconnue est survenue.');

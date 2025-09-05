@@ -7,5 +7,5 @@ export interface PlayerService {
 
   updatePlayerHp(player: PlayerType):Promise<PlayerType>;
 
-  createPlayer(player: PlayerType): Promise<PlayerType>;
+  createPlayer(player: PlayerType): Promise<void>;
 }

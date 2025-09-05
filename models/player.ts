@@ -3,11 +3,6 @@ import { v4 as uuidv4 } from 'uuid';
 import { ROLE } from "../constants.js";
 
 export const playerSchema = new Schema({
-  id:{
-    type:String,
-    default: uuidv4,
-    immutable: true
-  },
   prenom:{
     type:String,
     required:true,
@@ -52,7 +47,7 @@ playerSchema.pre('save', function(next) {
 export default mongoose.model("player", playerSchema);
 
 export type PlayerType = {
-  id?: string;
+  _id?: mongoose.Types.ObjectId;
   username: string;
   prenom : string;
   nom : string;

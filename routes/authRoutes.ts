@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { PlayerService } from "../services/PlayerService/PlayerService";
+import { log } from "console";
 
 const createAuthRouter = (service: PlayerService) => {
     const router = Router();
@@ -12,9 +13,10 @@ const createAuthRouter = (service: PlayerService) => {
         }
     });
 
-    router.get("/register", async (req, res) => {
+    router.post("/register", async (req, res) => {
         try {
-            res.json(await service.createPlayer(req.body.player));
+            await service.createPlayer(req.body);
+            res.status(200).send();
         } catch (e){
             e instanceof Error ? res.status(500).json({ message: e.message }) : res.status(500).json({ message: 'Une erreur inconnue est survenue.' });
         }
