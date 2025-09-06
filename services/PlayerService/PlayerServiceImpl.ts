@@ -1,12 +1,10 @@
-import { ROLE } from '../../constants';
+import { MAX_PLAYERS, ROLE } from '../../constants';
 import { NotFoundError, UsernameTakenError, ForbiddenError, WrongCredentialsError } from '../../errors';
 import { hashPassword } from '../../middleware/utils';
 import Player, { NewPlayerPayload, PlayerType } from '../../models/player';
 import { PlayerService } from './PlayerService';
 
 export class PlayerServiceImpl implements PlayerService {
-    MAX_PLAYERS = 12
-
     async getAllPlayers(): Promise<PlayerType[]> {
         return await Player.find();
     }
@@ -35,7 +33,7 @@ export class PlayerServiceImpl implements PlayerService {
         const playersLength = await this.getPlayerCount();
 
         newPlayer.password = hashPassword(payload.password);
-        newPlayer.role = playersLength === this.MAX_PLAYERS ? ROLE.QUEUED: ROLE.PLAYER;
+        newPlayer.role = playersLength === MAX_PLAYERS ? ROLE.QUEUED: ROLE.PLAYER;
         newPlayer.pv = 3;
 
         await newPlayer.save();

@@ -3,7 +3,7 @@ import { PlayerService } from "../services/PlayerService/PlayerService";
 import { generateAccessToken } from "../middleware/utils";
 import { WrongCredentialsError } from "../errors";
 import bcrypt from "bcryptjs";
-import { JWT_COOKIE_NAME } from "../constants";
+import { JWT_COOKIE_NAME, MAX_PLAYERS, REGISTRATION_STATUS } from "../constants";
 
 const createAuthRouter = (service: PlayerService) => {
     const router = Router();
@@ -34,6 +34,11 @@ const createAuthRouter = (service: PlayerService) => {
     router.post("/register", async (req, res) => {
         const role = await service.createPlayer(req.body);
         res.json({ role });
+    });
+
+    router.get("/registration_status", async (req, res) => {
+        const playerCount = await service.getPlayerCount();
+        playerCount >= MAX_PLAYERS ? res.json({ status: REGISTRATION_STATUS.FULL }) : res.json({ status: REGISTRATION_STATUS.OPEN });
     });
 
     router.post('/logout', (_req, res) => {
