@@ -3,3 +3,5 @@ export enum ROLE {
   PLAYER = "PLAYER",
   QUEUED = "QUEUED"
 }
+
+export const JWT_COOKIE_NAME = "jwt";

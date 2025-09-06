@@ -1,24 +1,22 @@
-import { ROLE } from '../../constants.js';
-import { NotFoundError, UnauthorizedError } from '../../errors/index.js';
-import { hashPassword } from '../../middleware/utils.js';
-import Player, { NewPlayerPayload, PlayerType } from '../../models/player.js';
-import { PlayerService } from './PlayerService.js';
+import { ROLE } from '../../constants';
+import { NotFoundError, UsernameTakenError, ForbiddenError, WrongCredentialsError } from '../../errors';
+import { hashPassword } from '../../middleware/utils';
+import Player, { NewPlayerPayload, PlayerType } from '../../models/player';
+import { PlayerService } from './PlayerService';
 
 export class PlayerServiceImpl implements PlayerService {
-    MAX_PLAYERS = 12;
+    MAX_PLAYERS = 12
 
-    async getAllPlayers(role: ROLE): Promise<PlayerType[]> {
-        if (role !== ROLE.ADMIN) throw new UnauthorizedError();
+    async getAllPlayers(): Promise<PlayerType[]> {
         return await Player.find();
     }
 
-    async getPlayer(username:string, password:string):Promise<PlayerType> {
-        const userPassword = await hashPassword(password);
-        const foundedPlayer = await Player.findOne({ username:username, password:userPassword }).exec();
+    async getPlayerCount(): Promise<number> {
+        return await Player.where("role").equals(ROLE.PLAYER).countDocuments();
+    }
 
-        if (!foundedPlayer) throw new NotFoundError;
-
-        return foundedPlayer;
+    async getPlayer(username: string):Promise<PlayerType | null> {
+        return await Player.findOne({ username });
     }
 
     async updatePlayerHp(username: string, pv: number):Promise<void>{
@@ -28,18 +26,28 @@ export class PlayerServiceImpl implements PlayerService {
             { new: true }
         );
 
-        if (!updatedPlayer) throw new NotFoundError;
+        if (!updatedPlayer) throw new NotFoundError();
     }
 
-    async createPlayer(payload: NewPlayerPayload): Promise<void> {
+    async createPlayer(payload: NewPlayerPayload): Promise<ROLE> {
+        if (await this.getPlayer(payload.username) != null) throw new UsernameTakenError();
         const newPlayer = new Player(payload);
-        const playersLength = (await Player.where("role").equals(ROLE.PLAYER)).length;
+        const playersLength = await this.getPlayerCount();
 
-        newPlayer.password = await hashPassword(payload.password);
+        newPlayer.password = hashPassword(payload.password);
         newPlayer.role = playersLength === this.MAX_PLAYERS ? ROLE.QUEUED: ROLE.PLAYER;
         newPlayer.pv = 3;
 
         await newPlayer.save();
+
+        return newPlayer.role;
+    }
+
+    async deletePlayer(username: string): Promise<void> {
+        if (await this.getPlayer(username) === null) {
+            throw new NotFoundError();
+        };
+        await Player.deleteOne({username});
     }
 }
 

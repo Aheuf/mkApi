@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 import { v4 as uuidv4 } from 'uuid';
-import { ROLE } from "../constants.js";
+import { ROLE } from "../constants";
 
 export const playerSchema = new Schema({
   prenom:{
