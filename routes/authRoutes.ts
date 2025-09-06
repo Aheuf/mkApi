@@ -32,8 +32,10 @@ const createAuthRouter = (service: PlayerService) => {
     });
 
     router.post("/register", async (req, res) => {
-        const role = await service.createPlayer(req.body);
-        res.json({ role });
+        if (req.body?.username === "me") {
+            return res.status(400).send();
+        }
+        res.send(await service.createPlayer(req.body));
     });
 
     router.get("/registration_status", async (req, res) => {
