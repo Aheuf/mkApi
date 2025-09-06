@@ -46,7 +46,7 @@ run().catch(console.dir);
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors());
+app.use(cors({ origin: ["http://localhost:5173", "https://mk.grosbi.de"], credentials: true }));
 app.use('/players', playersRouter(playerService));
 app.use(authRouter(playerService));
 app.use(errorHandler);
