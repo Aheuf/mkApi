@@ -1,26 +1,43 @@
 import { Router } from "express";
 import { PlayerService } from "../services/PlayerService/PlayerService";
 import { generateAccessToken } from "../middleware/utils";
+import { WrongCredentialsError } from "../errors";
+import bcrypt from "bcryptjs";
+import { JWT_COOKIE_NAME } from "../constants";
 
 const createAuthRouter = (service: PlayerService) => {
     const router = Router();
 
     router.post('/login', async (req,res) => {
-        const player = await service.getPlayer(req.body.username, req.body.password);
+        if (typeof req.body?.username !== "string" || typeof req.body?.password !== "string") {
+            return res.status(400).send();
+        }
+
+        const player = await service.getPlayer(req.body.username);
+        if (!player || !bcrypt.compareSync(req.body.password, player.password)) {
+            throw new WrongCredentialsError();
+        }
+
         const token = generateAccessToken(player.username, player.role);
 
-        res.cookie("authorization", `Bearer ${token}`, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
+        res.cookie(JWT_COOKIE_NAME, token, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000, sameSite: "strict" });
 
-        res.json(player);
+        res.json({
+            username: player.username,
+            nom: player.nom,
+            prenom: player.prenom,
+            role: player.role,
+            pv: player.pv
+        });
     });
 
     router.post("/register", async (req, res) => {
-        await service.createPlayer(req.body);
-        res.status(200).send();
+        const role = await service.createPlayer(req.body);
+        res.json({ role });
     });
 
-    router.post('/logout', (req,res) => {
-        res.clearCookie("authorization");
+    router.post('/logout', (_req, res) => {
+        res.clearCookie(JWT_COOKIE_NAME);
         res.status(200).send();
     });
 

@@ -1,15 +1,15 @@
 import dotenv from 'dotenv';
 import mongoose from "mongoose";
-import express, { Request, Response, NextFunction } from "express";
-import playersRouter from './routes/playersRoutes.js';
-import authRouter from './routes/authRoutes.js';
+import express from "express";
+import authRouter from './routes/authRoutes';
 import cors from 'cors';
 import http from 'http';
 import { ServerApiVersion } from "mongodb";
-import playerService from "./services/PlayerService/index.js";
-import websocket from "./websocket.js";
-import { NotFoundError, UnauthorizedError } from './errors/index.js';
-import { errorHandler } from './middleware/errorHandler.js';
+import playerService from "./services/PlayerService";
+import websocket from "./websocket";
+import { errorHandler } from './middleware/errorHandler';
+import playersRouter from 'routes/playersRoutes';
+import cookieParser from 'cookie-parser';
 
 dotenv.config();
 
@@ -45,6 +45,7 @@ async function run() {
 run().catch(console.dir);
 
 app.use(express.json());
+app.use(cookieParser());
 app.use(cors());
 app.use('/players', playersRouter(playerService));
 app.use(authRouter(playerService));
