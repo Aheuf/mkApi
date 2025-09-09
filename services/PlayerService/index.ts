@@ -1,4 +1,4 @@
-import { PlayerServiceImpl } from "./PlayerServiceImpl.js";
+import { PlayerServiceImpl } from "./PlayerServiceImpl";
 
 const playerService = new PlayerServiceImpl();
 

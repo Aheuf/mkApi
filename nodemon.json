@@ -1,6 +1,8 @@
 {
-  "watch": ["server.ts", "src"],
+  "watch": ["server.ts", "**/*.ts"],
   "ext": "ts,json",
-  "ignore": ["dist", "node_modules"],
-  "exec": "node --loader ts-node/esm server.ts"
+  "ignore": ["dist/**", "node_modules/**"],
+  "execMap": {
+    "ts": "ts-node -r tsconfig-paths/register"
+  }
 }
