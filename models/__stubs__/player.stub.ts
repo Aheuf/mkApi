@@ -1,30 +1,30 @@
-import { ROLE } from "../../constants.js";
-import { PlayerType } from "../player.js";
+import { ROLE } from "../../constants";
+import { NewPlayerPayload, PlayerType } from "../player";
 
 export const stubedPlayers: PlayerType[] = [
   {
-    id: "1",
+    username:"bobrat",
     prenom : "CLEMENT",
     nom : "GENTY",
     password: "password",
     pv : 3,
     role : ROLE.ADMIN
   },{
-    id: "2",
+    username:"bobcat",
     prenom : "LUCIANA",
     nom : "DOMINGOS",
     password: "password",
     pv : 2,
     role : ROLE.PLAYER
   },{
-    id: "3",
+    username:"bobhorse",
     prenom : "CLEMENT",
     nom : "LAILLE",
     password: "password",
     pv : 3,
     role : ROLE.PLAYER
   },{
-    id: "4",
+    username:"bobdog",
     prenom : "AURELIEN",
     password: "password",
     nom : "BURIE",
@@ -32,3 +32,10 @@ export const stubedPlayers: PlayerType[] = [
     role : ROLE.PLAYER
   }
 ];
+
+export const newStubedPlayer: NewPlayerPayload = {
+    username: "bob",
+    prenom : "robert",
+    nom : "squarepants",
+    password: "b!k1ni_b0tt0m"
+}

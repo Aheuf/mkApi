@@ -1,11 +1,16 @@
-import { PlayerType } from "../../models/player.js";
+import { ROLE } from "../../constants";
+import { NewPlayerPayload, PlayerType } from "../../models/player";
 
 export interface PlayerService {
   getAllPlayers(): Promise<PlayerType[]>;
 
-  getPlayerByName(name:string, firstName:string, password:string):Promise<PlayerType>;
+  getPlayerCount(): Promise<number>;
 
-  updatePlayerHp(player: PlayerType):Promise<PlayerType>;
+  getPlayer(username:string):Promise<PlayerType | null>;
 
-  createPlayer(player: PlayerType): Promise<PlayerType>;
+  updatePlayerHp(username: string, pv: number):Promise<void>;
+
+  createPlayer(payload: NewPlayerPayload): Promise<ROLE>;
+
+  deletePlayer(username: string): Promise<void>;
 }
