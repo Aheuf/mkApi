@@ -14,6 +14,12 @@ const websocket = (server: Server<typeof IncomingMessage, typeof ServerResponse>
     ws.on('close', () => {
       console.log('Client déconnecté');
     });
+
+    ws.on('message', (message) => {
+      console.log('Message reçu du client:', message.toString());
+      wss.clients.forEach((client) => client.send("update demandée"));
+    });
+
   });
 };
 
