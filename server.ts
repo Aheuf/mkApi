@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import mongoose from "mongoose";
 import express from "express";
 import authRouter from './routes/authRoutes';
+import healthRouter from './routes/healthRoutes';
 import cors from 'cors';
 import http from 'http';
 import { ServerApiVersion } from "mongodb";
@@ -49,6 +50,7 @@ app.use(cookieParser());
 app.use(cors({ origin: ["http://localhost:5173", "https://mk.grosbi.de"], credentials: true }));
 app.use('/players', playersRouter(playerService));
 app.use(authRouter(playerService));
+app.use('/health', healthRouter());
 app.use(errorHandler);
 
 websocket(server);
