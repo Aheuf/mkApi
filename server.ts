@@ -2,7 +2,6 @@ import dotenv from 'dotenv';
 import mongoose from "mongoose";
 import express from "express";
 import authRouter from './routes/authRoutes';
-import healthRouter from './routes/healthRoutes';
 import cors from 'cors';
 import http from 'http';
 import { ServerApiVersion } from "mongodb";
@@ -47,10 +46,10 @@ run().catch(console.dir);
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({ origin: ["http://localhost:5173", "https://mk.grosbi.de"], credentials: true }));
+app.use(cors({ origin: ["http://localhost:5173", "https://mario-kart-contest.aheuf.fr"], credentials: true }));
 app.use('/players', playersRouter(playerService));
 app.use(authRouter(playerService));
-app.use('/health', healthRouter());
+app.get('/health', (_req, res) => res.send(200));
 app.use(errorHandler);
 
 websocket(server);
