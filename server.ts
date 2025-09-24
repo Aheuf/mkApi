@@ -46,9 +46,10 @@ run().catch(console.dir);
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({ origin: ["http://localhost:5173", "https://mk.grosbi.de"], credentials: true }));
+app.use(cors({ origin: ["http://localhost:5173", "https://mario-kart-contest.aheuf.fr"], credentials: true }));
 app.use('/players', playersRouter(playerService));
 app.use(authRouter(playerService));
+app.get('/health', (_req, res) => res.status(200).send('OK'));
 app.use(errorHandler);
 
 websocket(server);
