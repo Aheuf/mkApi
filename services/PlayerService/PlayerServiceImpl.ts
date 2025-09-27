@@ -1,5 +1,5 @@
 import { MAX_PLAYERS, ROLE } from '../../constants';
-import { NotFoundError, UsernameTakenError, ForbiddenError, WrongCredentialsError } from '../../errors';
+import { NotFoundError, UsernameTakenError } from '../../errors';
 import { hashPassword } from '../../middleware/utils';
 import Player, { NewPlayerPayload, PlayerType } from '../../models/player';
 import { PlayerService } from './PlayerService';
@@ -27,7 +27,7 @@ export class PlayerServiceImpl implements PlayerService {
         if (!updatedPlayer) throw new NotFoundError();
     }
 
-    async createPlayer(payload: NewPlayerPayload): Promise<ROLE> {
+    async createPlayer(payload: NewPlayerPayload): Promise<PlayerType> {
         if (await this.getPlayer(payload.username) != null) throw new UsernameTakenError();
         const newPlayer = new Player(payload);
         const playersLength = await this.getPlayerCount();
@@ -38,7 +38,7 @@ export class PlayerServiceImpl implements PlayerService {
 
         await newPlayer.save();
 
-        return newPlayer.role;
+        return newPlayer;
     }
 
     async deletePlayer(username: string): Promise<void> {

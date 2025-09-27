@@ -6,15 +6,14 @@ import cors from 'cors';
 import http from 'http';
 import { ServerApiVersion } from "mongodb";
 import playerService from "./services/PlayerService";
-import websocket from "./websocket";
 import { errorHandler } from './middleware/errorHandler';
 import playersRouter from 'routes/playersRoutes';
 import cookieParser from 'cookie-parser';
+import ServerSentEventClient from './models/serverSentEventClient';
 
 dotenv.config();
 
 const app = express();
-const server = http.createServer(app);
 const clientOptions = {
   serverApi: {
     version: ServerApiVersion.v1,
@@ -26,9 +25,9 @@ const clientOptions = {
 async function run() {
   try {
     // Create a Mongoose client with a MongoClientOptions object to set the Stable API version
-    if(process.env.DATABASE_URL){
+    if (process.env.DATABASE_URL) {
       await mongoose.connect(process.env.DATABASE_URL, clientOptions);
-      if(mongoose.connection.db){
+      if (mongoose.connection.db) {
         console.info("You successfully connected to MongoDB!");
       } else {
         throw new Error("Failed to connected to MongoDB!");
@@ -36,22 +35,21 @@ async function run() {
     } else {
       throw new Error("No URL provided for MongoDB connection");
     }
-  } catch(e) {
-     if(e instanceof Error) throw e;
-      throw new Error('erreur de connexion au serveur');
+  } catch (e) {
+    if (e instanceof Error) throw e;
+    throw new Error('erreur de connexion au serveur');
   }
 }
 
 run().catch(console.dir);
 
+const clients: Set<ServerSentEventClient> = new Set();
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({ origin: [`http://${process.env.DOMAIN}`, `https://${process.env.DOMAIN}`], credentials: true }));
-app.use('/players', playersRouter(playerService));
-app.use(authRouter(playerService));
+app.use(authRouter(playerService, clients));
+app.use('/players', playersRouter(playerService, clients));
 app.get('/health', (_req, res) => res.status(200).send('OK'));
 app.use(errorHandler);
 
-websocket(server);
-
-server.listen(3000, () => console.info("=== SERVER STARTED ==="));
+http.createServer(app).listen(3000, () => console.info("=== SERVER STARTED ==="));
