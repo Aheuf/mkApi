@@ -10,19 +10,18 @@ import { errorHandler } from './middleware/errorHandler';
 import playersRouter from 'routes/playersRoutes';
 import cookieParser from 'cookie-parser';
 import ServerSentEventClient from './models/serverSentEventClient';
+import { rateLimit } from 'express-rate-limit'
 
 dotenv.config();
 
-const app = express();
-const clientOptions = {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true
-  }
-};
-
 async function run() {
+  const clientOptions = {
+    serverApi: {
+      version: ServerApiVersion.v1,
+      strict: true,
+      deprecationErrors: true
+    }
+  };
   try {
     // Create a Mongoose client with a MongoClientOptions object to set the Stable API version
     if (process.env.DATABASE_URL) {
@@ -43,7 +42,15 @@ async function run() {
 
 run().catch(console.dir);
 
+const UNE_MINUTE_MS = 60 * 1000;
+const limiter = rateLimit({
+	windowMs: UNE_MINUTE_MS,
+	limit: 100
+});
+
+const app = express();
 const clients: Set<ServerSentEventClient> = new Set();
+app.use(limiter);
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({ origin: [`http://${process.env.DOMAIN}`, `https://${process.env.DOMAIN}`], credentials: true }));
