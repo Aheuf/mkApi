@@ -32,6 +32,9 @@ export class PlayerServiceImpl implements PlayerService {
         const newPlayer = new Player(payload);
         const playersLength = await this.getPlayerCount();
 
+        newPlayer.username = payload.username.trim();
+        newPlayer.prenom = payload.prenom.trim();
+        newPlayer.nom = payload.nom.trim();
         newPlayer.password = hashPassword(payload.password);
         newPlayer.role = playersLength === MAX_PLAYERS ? ROLE.QUEUED: ROLE.PLAYER;
         newPlayer.pv = 3;
