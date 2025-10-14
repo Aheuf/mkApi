@@ -14,7 +14,7 @@ export function generateAccessToken(username: string, role: ROLE) {
 }
 
 export function authenticateToken(req: Request, res: Response, next: NextFunction) {
-  const token = req.cookies && req.cookies[JWT_COOKIE_NAME];
+  const token = req.cookies?.[JWT_COOKIE_NAME];
 
   if (token == null) return res.sendStatus(401);
 

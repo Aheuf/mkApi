@@ -2,9 +2,9 @@ import { hashPassword } from "../utils";
 
 describe("utils test", () => {
     describe("hashPassword", () => {
-        it("should hash the password", async () => {
+        it("should hash the password", () => {
             const password = "testPassword";
-            const hashedPassword = await hashPassword(password);
+            const hashedPassword = hashPassword(password);
             expect(hashedPassword).not.toBe(password);
         });
     });

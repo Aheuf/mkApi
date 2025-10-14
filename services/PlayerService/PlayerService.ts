@@ -1,4 +1,3 @@
-import { ROLE } from "../../constants";
 import { NewPlayerPayload, PlayerType } from "../../models/player";
 
 export interface PlayerService {
@@ -10,7 +9,7 @@ export interface PlayerService {
 
   updatePlayerHp(username: string, pv: number):Promise<void>;
 
-  createPlayer(payload: NewPlayerPayload): Promise<ROLE>;
+  createPlayer(payload: NewPlayerPayload): Promise<PlayerType>;
 
   deletePlayer(username: string): Promise<void>;
 }

@@ -15,7 +15,7 @@ const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
-app.use("/players", playersRouter(new PlayerServiceImpl()));
+app.use("/players", playersRouter(new PlayerServiceImpl(), new Set()));
 app.use(errorHandler);
 
 describe("player routing tests", () => {

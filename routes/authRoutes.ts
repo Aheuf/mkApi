@@ -3,9 +3,11 @@ import { PlayerService } from "../services/PlayerService/PlayerService";
 import { generateAccessToken } from "../middleware/utils";
 import { WrongCredentialsError } from "../errors";
 import bcrypt from "bcryptjs";
-import { JWT_COOKIE_NAME, MAX_PLAYERS, REGISTRATION_STATUS } from "../constants";
+import { JWT_COOKIE_NAME, MAX_PLAYERS, REGISTRATION_STATUS, ROLE } from "../constants";
+import ServerSentEventClient, { ServerSentEventPayload, ServerSentEventType } from "../models/serverSentEventClient";
+import { NewPlayerPayload } from "../models/player";
 
-const createAuthRouter = (service: PlayerService) => {
+const createAuthRouter = (service: PlayerService, clients: Set<ServerSentEventClient>) => {
     const router = Router();
 
     router.post('/login', async (req,res) => {
@@ -32,10 +34,17 @@ const createAuthRouter = (service: PlayerService) => {
     });
 
     router.post("/register", async (req, res) => {
-        if (req.body?.username === "me") {
-            return res.status(400).send();
-        }
-        res.send(await service.createPlayer(req.body));
+        const payload: NewPlayerPayload = req.body;
+        const player = await service.createPlayer(payload);
+        res.send(player.role);
+
+        if (player.role !== ROLE.PLAYER) return;
+        clients.forEach(client => {
+            if (client.player.role === ROLE.ADMIN) {
+                const data: ServerSentEventPayload = { action: ServerSentEventType.CREATE, player }
+                client.res.write(`data: ${JSON.stringify(data)}\n\n`);
+            }
+        });
     });
 
     router.get("/registration_status", async (req, res) => {
