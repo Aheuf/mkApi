@@ -20,7 +20,8 @@ export const playerSchema = new Schema({
   username:{
     type:String,
     unique:true,
-    required:true
+    required:true,
+    collation: { locale: 'fr', strength: 2 } // Pour rendre la recherche insensible à la casse
   },
   pv:{
     type:Number,
